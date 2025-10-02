@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # Nome do nosso serviço/container
+  postgres:
+    # Imagem oficial do PostgreSQL que será baixada do Docker Hub
+    image: postgres:13
+    # Nome do container que será criado
+    container_name: clubedosbarbas-postgres
+    # Mapeamento de portas: <porta-do-seu-pc>:<porta-do-container>
+    ports:
+      - "5433:5432"
+    # Variáveis de ambiente para configurar o banco de dados
+    environment:
+      # Define a senha para o superusuário 'postgres'
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123456}
+      # Define o usuário que será criado
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      # Define o nome do banco de dados que será criado
+      POSTGRES_DB: ${POSTGRES_DB:-clubedosbarbas_db}
+    # Volume para persistir os dados do banco mesmo que o container seja removido
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
