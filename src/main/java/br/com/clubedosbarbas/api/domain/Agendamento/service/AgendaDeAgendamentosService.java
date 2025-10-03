@@ -3,7 +3,6 @@ package br.com.clubedosbarbas.api.domain.Agendamento.service;
 import java.util.HashSet;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.clubedosbarbas.api.domain.Agendamento.Agendamento;
@@ -25,7 +24,7 @@ public class AgendaDeAgendamentosService {
     private final ServicoRepository servicoRepository;
     private final List<ValidadorAgendamento> validadores;
 
-    @Autowired 
+    // @Autowired foi REMOVIDO daqui
     public AgendaDeAgendamentosService(AgendamentoRepository agendamentoRepository, BarbeiroRepository barbeiroRepository, ClienteRepository clienteRepository, ServicoRepository servicoRepository, List<ValidadorAgendamento> validadores) {
         this.agendamentoRepository = agendamentoRepository;
         this.barbeiroRepository = barbeiroRepository;
@@ -42,10 +41,8 @@ public class AgendaDeAgendamentosService {
             throw new ValidacaoException("Id do barbeiro informado não existe!");
         }
 
-        // Executa todas as validações da lista
         validadores.forEach(v -> v.validar(dados));
 
-        // VALIDAÇÃO DE HORÁRIO DUPLICADO (ainda precisa estar aqui)
         var barbeiroPossuiOutroAgendamentoNoMesmoHorario = agendamentoRepository.existsByBarbeiroIdAndDataHora(dados.idBarbeiro(), dados.dataHora());
         if (barbeiroPossuiOutroAgendamentoNoMesmoHorario) {
             throw new ValidacaoException("Barbeiro já possui outro agendamento nesse mesmo horário");

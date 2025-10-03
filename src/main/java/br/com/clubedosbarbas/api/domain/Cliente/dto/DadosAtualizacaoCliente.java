@@ -6,5 +6,6 @@ public record DadosAtualizacaoCliente(
         @NotNull
         Long id,
         String nome,
-        String telefone
+        String telefone,
+        String fotoUrl
 ) {}
