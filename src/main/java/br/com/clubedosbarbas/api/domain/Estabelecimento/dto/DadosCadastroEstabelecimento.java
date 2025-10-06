@@ -6,10 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record DadosCadastroEstabelecimento(
-        @NotBlank
-        String nome,
-        @NotNull
-        LocalTime horario_abertura,
-        @NotNull
-        LocalTime horario_fechamento
+        @NotBlank String nome,
+        @NotNull LocalTime horarioAbertura,
+        @NotNull LocalTime horarioFim
 ) {}

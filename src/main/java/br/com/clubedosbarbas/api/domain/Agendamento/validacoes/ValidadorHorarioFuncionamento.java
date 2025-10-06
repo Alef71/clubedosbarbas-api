@@ -12,10 +12,9 @@ public class ValidadorHorarioFuncionamento implements ValidadorAgendamento {
 
     @Autowired
     private EstabelecimentoRepository estabelecimentoRepository;
-   
+
     @Override
     public void validar(DadosAgendamento dados) {
-        
         var estabelecimento = estabelecimentoRepository.findById(1L).orElse(null);
         if (estabelecimento == null) {
             throw new ValidacaoException("Estabelecimento não configurado.");
@@ -24,7 +23,7 @@ public class ValidadorHorarioFuncionamento implements ValidadorAgendamento {
         var dataAgendamento = dados.dataHora();
         var horarioAgendamento = dataAgendamento.toLocalTime();
 
-        if (horarioAgendamento.isBefore(estabelecimento.getHorario_abertura()) || horarioAgendamento.isAfter(estabelecimento.getHorario_fechamento())) {
+        if (horarioAgendamento.isBefore(estabelecimento.getHorarioAbertura()) || horarioAgendamento.isAfter(estabelecimento.getHorarioFim())) {
             throw new ValidacaoException("Agendamento fora do horário de funcionamento da barbearia.");
         }
     }

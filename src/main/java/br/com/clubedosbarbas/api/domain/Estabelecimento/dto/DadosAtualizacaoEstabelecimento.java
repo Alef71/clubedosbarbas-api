@@ -4,6 +4,6 @@ import java.time.LocalTime;
 
 public record DadosAtualizacaoEstabelecimento(
         String nome,
-        LocalTime horario_abertura,
-        LocalTime horario_fechamento
+        LocalTime horarioAbertura,
+        LocalTime horarioFim
 ) {}

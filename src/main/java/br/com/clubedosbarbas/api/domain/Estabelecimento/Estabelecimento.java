@@ -18,19 +18,22 @@ public class Estabelecimento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String nome;
-    private LocalTime horario_abertura;
-    private LocalTime horario_fechamento;
+    
+    private LocalTime horarioAbertura;
+    
+    private LocalTime horarioFim;
 
     public void atualizarInformacoes(DadosAtualizacaoEstabelecimento dados) {
         if (dados.nome() != null) {
             this.nome = dados.nome();
         }
-        if (dados.horario_abertura() != null) {
-            this.horario_abertura = dados.horario_abertura();
+        if (dados.horarioAbertura() != null) {
+            this.horarioAbertura = dados.horarioAbertura();
         }
-        if (dados.horario_fechamento() != null) {
-            this.horario_fechamento = dados.horario_fechamento();
+        if (dados.horarioFim() != null) {
+            this.horarioFim = dados.horarioFim();
         }
     }
 }

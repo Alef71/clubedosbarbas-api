@@ -1,23 +1,22 @@
 package br.com.clubedosbarbas.api.controller;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import br.com.clubedosbarbas.api.domain.Chat.Mensagem;
+import br.com.clubedosbarbas.api.domain.Chat.StatusMensagem;
 import br.com.clubedosbarbas.api.domain.Chat.dto.DadosEnvioMensagem;
 import br.com.clubedosbarbas.api.domain.Chat.dto.DadosListagemMensagem;
 import br.com.clubedosbarbas.api.domain.Chat.repository.MensagemRepository;
+import br.com.clubedosbarbas.api.domain.Chat.repository.MensagemSpecifications;
+import br.com.clubedosbarbas.api.infra.dto.ApiResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("chat")
@@ -28,21 +27,25 @@ public class ChatController {
 
     @PostMapping("/mensagens")
     @Transactional
-    public ResponseEntity<Void> enviar(@RequestBody @Valid DadosEnvioMensagem dados) {
-        var mensagem = new Mensagem(null, dados.remetenteId(), dados.remetenteTipo(), dados.destinatarioId(), dados.destinatarioTipo(), dados.conteudo(), LocalDateTime.now());
+    public ResponseEntity<ApiResponse<DadosListagemMensagem>> enviar(@RequestBody @Valid DadosEnvioMensagem dados) {
+        var mensagem = new Mensagem(null, dados.remetenteId(), dados.remetenteTipo(), dados.destinatarioId(), dados.destinatarioTipo(), dados.conteudo(), LocalDateTime.now(), StatusMensagem.ENVIADA);
         repository.save(mensagem);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(ApiResponse.success(new DadosListagemMensagem(mensagem)));
     }
 
     @GetMapping("/conversas")
-    public ResponseEntity<List<DadosListagemMensagem>> getConversa(
+    public ResponseEntity<ApiResponse<List<DadosListagemMensagem>>> getConversa(
             @RequestParam Long usuario1Id,
-            @RequestParam Long usuario2Id) {
+            @RequestParam Long usuario2Id,
+            @RequestParam(required = false) LocalDate dataInicio,
+            @RequestParam(required = false) LocalDate dataFim) {
 
-        var mensagens = repository.findByRemetenteIdAndDestinatarioIdOrRemetenteIdAndDestinatarioIdOrderByDataEnvioAsc(
-                usuario1Id, usuario2Id, usuario2Id, usuario1Id);
+        // Usa a nova classe Specification para construir a query dinamicamente
+        Specification<Mensagem> spec = MensagemSpecifications.comFiltros(usuario1Id, usuario2Id, dataInicio, dataFim);
+        
+        var mensagens = repository.findAll(spec);
         
         var listaDto = mensagens.stream().map(DadosListagemMensagem::new).toList();
-        return ResponseEntity.ok(listaDto);
+        return ResponseEntity.ok(ApiResponse.success(listaDto));
     }
 }

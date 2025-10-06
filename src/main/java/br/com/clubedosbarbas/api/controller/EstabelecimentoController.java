@@ -15,6 +15,7 @@ import br.com.clubedosbarbas.api.domain.Estabelecimento.dto.DadosAtualizacaoEsta
 import br.com.clubedosbarbas.api.domain.Estabelecimento.dto.DadosCadastroEstabelecimento;
 import br.com.clubedosbarbas.api.domain.Estabelecimento.dto.DadosListagemEstabelecimento;
 import br.com.clubedosbarbas.api.domain.Estabelecimento.repository.EstabelecimentoRepository;
+import br.com.clubedosbarbas.api.infra.dto.ApiResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -26,29 +27,29 @@ public class EstabelecimentoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<DadosListagemEstabelecimento> cadastrar(@RequestBody @Valid DadosCadastroEstabelecimento dados) {
+    public ResponseEntity<ApiResponse<DadosListagemEstabelecimento>> cadastrar(@RequestBody @Valid DadosCadastroEstabelecimento dados) {
         if (repository.count() > 0) {
-            return ResponseEntity.badRequest().build(); // Impede cadastrar mais de um
+            return ResponseEntity.badRequest().build();
         }
-        var estabelecimento = new Estabelecimento(null, dados.nome(), dados.horario_abertura(), dados.horario_fechamento());
+        var estabelecimento = new Estabelecimento(null, dados.nome(), dados.horarioAbertura(), dados.horarioFim());
         repository.save(estabelecimento);
-        return ResponseEntity.ok(new DadosListagemEstabelecimento(estabelecimento));
+        return ResponseEntity.ok(ApiResponse.success(new DadosListagemEstabelecimento(estabelecimento)));
     }
 
     @GetMapping
-    public ResponseEntity<DadosListagemEstabelecimento> detalhar() {
+    public ResponseEntity<ApiResponse<DadosListagemEstabelecimento>> detalhar() {
         var estabelecimento = repository.findById(1L).orElse(null);
         if (estabelecimento == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(new DadosListagemEstabelecimento(estabelecimento));
+        return ResponseEntity.ok(ApiResponse.success(new DadosListagemEstabelecimento(estabelecimento)));
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity<DadosListagemEstabelecimento> atualizar(@RequestBody @Valid DadosAtualizacaoEstabelecimento dados) {
-        var estabelecimento = repository.getReferenceById(1L); // Sempre atualiza o ID 1
+    public ResponseEntity<ApiResponse<DadosListagemEstabelecimento>> atualizar(@RequestBody @Valid DadosAtualizacaoEstabelecimento dados) {
+        var estabelecimento = repository.getReferenceById(1L);
         estabelecimento.atualizarInformacoes(dados);
-        return ResponseEntity.ok(new DadosListagemEstabelecimento(estabelecimento));
+        return ResponseEntity.ok(ApiResponse.success(new DadosListagemEstabelecimento(estabelecimento)));
     }
 }
