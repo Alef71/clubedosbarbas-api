@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.clubedosbarbas.api.domain.Barbeiro.Barbeiro;
 import br.com.clubedosbarbas.api.domain.Barbeiro.dto.DadosAtualizacaoBarbeiro;
 import br.com.clubedosbarbas.api.domain.Barbeiro.dto.DadosCadastroBarbeiro;
 import br.com.clubedosbarbas.api.domain.Barbeiro.dto.DadosListagemBarbeiro;
 import br.com.clubedosbarbas.api.domain.Barbeiro.repository.BarbeiroRepository;
+import br.com.clubedosbarbas.api.domain.Barbeiro.service.BarbeiroService;
 import br.com.clubedosbarbas.api.infra.dto.ApiResponse;
 import jakarta.validation.Valid;
 
@@ -29,11 +29,14 @@ public class BarbeiroController {
     @Autowired
     private BarbeiroRepository repository;
 
+    @Autowired
+    private BarbeiroService barbeiroService; // Serviço que contém a lógica de negócio
+
     @PostMapping
     @Transactional
     public ResponseEntity<ApiResponse<DadosListagemBarbeiro>> cadastrar(@RequestBody @Valid DadosCadastroBarbeiro dados) {
-        var barbeiro = new Barbeiro(dados);
-        repository.save(barbeiro);
+        // CORREÇÃO: Agora usamos o serviço para cadastrar, que executa as validações
+        var barbeiro = barbeiroService.cadastrar(dados);
         return ResponseEntity.ok(ApiResponse.success(new DadosListagemBarbeiro(barbeiro)));
     }
 

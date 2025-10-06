@@ -2,6 +2,7 @@ package br.com.clubedosbarbas.api.domain.Agendamento;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import br.com.clubedosbarbas.api.domain.Barbeiro.Barbeiro;
@@ -19,15 +20,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Table(name = "agendamento")
 @Entity(name = "Agendamento")
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Agendamento {
 
     @Id
@@ -43,11 +38,9 @@ public class Agendamento {
     private Cliente cliente;
 
     @ManyToMany
-    @JoinTable(
-            name = "agendamento_servicos",
-            joinColumns = @JoinColumn(name = "agendamento_id"),
-            inverseJoinColumns = @JoinColumn(name = "servico_id")
-    )
+    @JoinTable(name = "agendamento_servicos",
+               joinColumns = @JoinColumn(name = "agendamento_id"),
+               inverseJoinColumns = @JoinColumn(name = "servico_id"))
     private Set<Servico> servicos = new HashSet<>();
 
     private LocalDateTime dataHora;
@@ -57,8 +50,22 @@ public class Agendamento {
 
     private Double valorTotal;
 
-    // --- MÉTODOS GETTERS E SETTERS MANUAIS ---
+    // Construtor vazio (obrigatório pelo JPA)
+    public Agendamento() {
+    }
 
+    // Construtor com todos os argumentos
+    public Agendamento(Long id, Barbeiro barbeiro, Cliente cliente, Set<Servico> servicos, LocalDateTime dataHora, StatusAgendamento status, Double valorTotal) {
+        this.id = id;
+        this.barbeiro = barbeiro;
+        this.cliente = cliente;
+        this.servicos = servicos;
+        this.dataHora = dataHora;
+        this.status = status;
+        this.valorTotal = valorTotal;
+    }
+
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -113,5 +120,19 @@ public class Agendamento {
 
     public void setValorTotal(Double valorTotal) {
         this.valorTotal = valorTotal;
+    }
+
+    // Métodos equals e hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Agendamento that = (Agendamento) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

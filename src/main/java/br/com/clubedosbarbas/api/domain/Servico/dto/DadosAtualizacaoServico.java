@@ -7,6 +7,6 @@ public record DadosAtualizacaoServico(
         Long id,
         String nome,
         String descricao,
-        Integer duracao_em_minutos,
+        Integer duracaoEmMinutos, // Corrigido para camelCase
         Double valor
 ) {}

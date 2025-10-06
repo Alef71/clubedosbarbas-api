@@ -8,7 +8,7 @@ public record DadosCadastroServico(
         String nome,
         String descricao,
         @NotNull
-        Integer duracao_em_minutos,
+        Integer duracaoEmMinutos, // Corrigido para camelCase
         @NotNull
         Double valor
 ) {}
