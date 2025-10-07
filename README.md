@@ -82,7 +82,7 @@ Para executar esta API na sua máquina, siga os passos abaixo.
     ```
 
 4.  **Pronto\!**
-    A sua API estará a correr em `http://localhost:8080`. Todos os endpoints estão disponíveis sob o prefixo `/api/v1` (ex: `http://localhost:8080/api/v1/clientes`).
+    A sua API estará a correr em `http://localhost:8080`. Todos os endpoints estão disponíveis sob o prefixo `/api/v1` (ex: `http://localhost:8080/api/v1/swagger-ui.html`).
 
 -----
 
